@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>综测工作台 · 学业加分规划</title>
+<meta name="description" content="把综测细则、加分明细、目标缺口和阶段进度放在同一张工作表里。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ─────────────── 左侧主导航 ─────────────── -->
+<aside class="rail">
+  <div class="brand">
+    <span class="brand__mark">综</span>
+    <div class="brand__text">
+      <strong>综测工作台</strong>
+      <small>ACADEMIC LEDGER</small>
+    </div>
+  </div>
+
+  <nav class="nav" id="nav">
+    <button class="nav__item is-active" data-view="profile">
+      <i>01</i><span>档案</span><em>信息与目标</em>
+    </button>
+    <button class="nav__item" data-view="catalog">
+      <i>02</i><span>目录</span><em>加分明细</em>
+    </button>
+    <button class="nav__item" data-view="plan">
+      <i>03</i><span>规划</span><em>方案与缺口</em>
+    </button>
+    <button class="nav__item" data-view="progress">
+      <i>04</i><span>进度</span><em>阶段记录</em>
+    </button>
+  </nav>
+
+  <div class="rail__foot">
+    <p class="rail__note">数据只存在本机浏览器，不上传、不同步。</p>
+    <button class="linkbtn" id="btnReset">清空全部数据</button>
+  </div>
+</aside>
+
+<!-- ─────────────── 主体 ─────────────── -->
+<main class="main">
+
+  <!-- 档案头：常驻，四个板块共享 -->
+  <header class="masthead">
+    <div class="masthead__id">
+      <p class="eyebrow" id="mhTerm">— 学期</p>
+      <h1 class="masthead__name" id="mhName">—</h1>
+      <p class="masthead__sub" id="mhSchool">—</p>
+    </div>
+    <div class="masthead__stats">
+      <div class="stat">
+        <small>目标总分</small>
+        <b id="mhTarget">0</b>
+      </div>
+      <div class="stat">
+        <small>已锁定</small>
+        <b id="mhLocked">0</b>
+      </div>
+      <div class="stat stat--accent">
+        <small>还差</small>
+        <b id="mhGap">0</b>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════ 01 档案 ══════════ -->
+  <section class="view is-active" id="view-profile">
+    <div class="view__head">
+      <h2>个人档案与目标</h2>
+      <p class="view__desc">先把你学校的评分结构写进来，后面所有计算都依赖这张表。分值请照你学院的细则抄，别信网上的通用版本。</p>
+    </div>
+
+    <div class="grid-2">
+      <!-- 基本信息 -->
+      <div class="card">
+        <h3 class="card__title">基本信息</h3>
+        <div class="field">
+          <label for="fName">姓名 / 代号</label>
+          <input id="fName" data-profile="name" placeholder="截图前建议改成化名">
+        </div>
+        <div class="field">
+          <label for="fSchool">学校</label>
+          <input id="fSchool" data-profile="school" placeholder="示例大学">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="fCollege">学院</label>
+            <input id="fCollege" data-profile="college" placeholder="信息工程学院">
+          </div>
+          <div class="field">
+            <label for="fMajor">专业</label>
+            <input id="fMajor" data-profile="major" placeholder="计算机科学与技术">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="fGrade">年级</label>
+            <input id="fGrade" data-profile="grade" placeholder="2024 级">
+          </div>
+          <div class="field">
+            <label for="fTerm">学期</label>
+            <input id="fTerm" data-profile="term" placeholder="2026 秋季学期">
+          </div>
+        </div>
+        <p class="hint">这些内容会出现在截图里。姓名字段截图前请改掉。</p>
+      </div>
+
+      <!-- 分数目标 -->
+      <div class="card">
+        <h3 class="card__title">分数目标</h3>
+        <div class="field-row">
+          <div class="field">
+            <label for="fTarget">目标总分</label>
+            <input id="fTarget" type="number" step="0.5" data-profile="targetScore" placeholder="88">
+          </div>
+          <div class="field">
+            <label for="fLocked">已确定得分</label>
+            <input id="fLocked" type="number" step="0.5" data-profile="lockedScore" placeholder="64.5">
+          </div>
+        </div>
+        <p class="hint">「已确定得分」指学业加权平均这类已经定下来、不用再争取的部分。加分明细里标为「已获得」的条目会自动叠加到它上面。</p>
+        <div class="mini-ledger">
+          <div><small>锁定分</small><b id="pfLocked">0</b></div>
+          <div><small>在途分</small><b id="pfPlanned">0</b></div>
+          <div><small>缺口</small><b id="pfGap">0</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 类别权重 -->
+    <div class="card">
+      <h3 class="card__title">评分类别与上限 <span class="card__hint">按你学院的细则填上限，加总应等于 100</span></h3>
+      <div class="cat-editor" id="catEditor"></div>
+      <p class="hint" id="catSum">上限合计 0 分</p>
+    </div>
+  </section>
+
+  <!-- ══════════ 02 目录 ══════════ -->
+  <section class="view" id="view-catalog">
+    <div class="view__head">
+      <h2>加分明细目录</h2>
+      <p class="view__desc">一件竞赛、一个项目、一段学生工作，都是一条目材。状态分三种：已获得（算进锁定分）、计划中（可被规划挑选）、已放弃。</p>
+    </div>
+
+    <!-- 类别分布 -->
+    <div class="card">
+      <h3 class="card__title">类别分布 <span class="card__hint">灰底为上限，墨色为已锁定</span></h3>
+      <div class="bars" id="catBars"></div>
+    </div>
+
+    <!-- 新增 -->
+    <div class="card">
+      <h3 class="card__title">新增条目</h3>
+      <form class="addbar" id="addForm" autocomplete="off">
+        <input id="aTitle" class="addbar__title" placeholder="事项名称，例：全国大学生数学建模竞赛" required>
+        <select id="aCategory"></select>
+        <select id="aLevel"></select>
+        <input id="aScore" type="number" step="0.5" min="0" placeholder="分值" class="addbar__num" required>
+        <select id="aStatus"></select>
+        <input id="aDue" type="date" class="addbar__date">
+        <button type="submit" class="btn btn--solid">加入</button>
+      </form>
+    </div>
+
+    <!-- 解析器 -->
+    <details class="card details" id="parseBox">
+      <summary class="card__title">从通知文本里提取条目 <span class="card__hint">粘贴比赛通知或细则段落，自动找出候选</span></summary>
+      <div class="details__body">
+        <textarea id="parseInput" rows="6" placeholder="把通知原文粘进来。它会找含「竞赛 / 大赛 / 项目 / 计划 / 评比」的句子，并识别级别关键词和日期。"></textarea>
+        <div class="row-between">
+          <button class="btn btn--solid" id="btnParse">提取候选</button>
+          <span class="hint" id="parseMsg"></span>
+        </div>
+        <div id="parseResult" class="parse-result"></div>
+      </div>
+    </details>
+
+    <!-- 列表 -->
+    <div class="card">
+      <div class="row-between card__toolbar">
+        <h3 class="card__title">全部条目 <span class="card__hint" id="catalogCount">0 条</span></h3>
+        <div class="filters">
+          <input id="q" class="input-sm" placeholder="搜索名称">
+          <select id="filterCat" class="input-sm"></select>
+          <select id="filterStatus" class="input-sm"></select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="table" id="catalogTable">
+          <thead>
+            <tr>
+              <th>事项</th><th>类别</th><th>级别</th>
+              <th class="ta-r">分值</th><th>状态</th><th>截止</th><th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="empty" id="catalogEmpty" hidden>还没有条目。上面加一条，或用解析器提取。</p>
+    </div>
+  </section>
+
+  <!-- ══════════ 03 规划 ══════════ -->
+  <section class="view" id="view-plan">
+    <div class="view__head">
+      <h2>缺口与规划方案</h2>
+      <p class="view__desc">从「计划中」的条目里挑出组合，凑够缺口。三套方案的风险取向不同，选一套作为当前执行方案。</p>
+    </div>
+
+    <div class="gap-card" id="gapCard">
+      <div class="gap-card__ring">
+        <svg viewBox="0 0 140 140" role="img" aria-label="得分进度">
+          <circle class="ring-track" cx="70" cy="70" r="58"></circle>
+          <circle class="ring-fill" id="ringFill" cx="70" cy="70" r="58"></circle>
+        </svg>
+        <div class="gap-card__pct"><b id="ringPct">0</b><small>%</small><em>已锁定 ÷ 目标</em></div>
+      </div>
+      <div class="gap-card__body">
+        <p class="eyebrow">缺口测算</p>
+        <h3 id="gapHeadline">—</h3>
+        <p class="gap-card__sub" id="gapNote">—</p>
+        <button class="btn btn--solid" id="btnGenerate">生成 / 刷新方案</button>
+      </div>
+    </div>
+
+    <div class="plans" id="plans"></div>
+
+    <div class="card" id="stepsCard" hidden>
+      <div class="row-between card__toolbar">
+        <h3 class="card__title">当前方案 · <span id="activePlanName">—</span></h3>
+        <button class="btn btn--ghost" id="btnAddStep">＋ 手动加一步</button>
+      </div>
+      <div class="steps" id="steps"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ 04 进度 ══════════ -->
+  <section class="view" id="view-progress">
+    <div class="view__head">
+      <h2>阶段进度</h2>
+      <p class="view__desc">按当前方案的阶段逐条记。换方案时已完成记录会被迁移到同类别的新阶段上，不会丢。</p>
+    </div>
+
+    <div class="stat-row" id="progressStats">
+      <div class="card stat-card"><small>完成阶段</small><b id="pgDone">0 / 0</b></div>
+      <div class="card stat-card"><small>累计投入</small><b id="pgHours">0 h</b></div>
+      <div class="card stat-card"><small>记录条数</small><b id="pgRecords">0</b></div>
+      <div class="card stat-card stat-card--accent"><small>预计可补分</small><b id="pgScore">0</b></div>
+    </div>
+
+    <div class="card">
+      <h3 class="card__title">时间轴</h3>
+      <div class="timeline" id="timeline"></div>
+      <p class="empty" id="progressEmpty" hidden>还没有方案。先去「03 规划」生成一套。</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast" aria-live="polite"></div>
+
+<script src="assets/js/store.js"></script>
+<script src="assets/js/plan.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
