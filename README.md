@@ -2,7 +2,8 @@
 
 > 大学生综合素质测评（综测）的规划与追踪工具 —— 用 [WorkBuddy](https://www.workbuddy.cn) AI 对话式开发完成，全程零手写框架依赖。
 
-**在线体验**：https://zongce-workbench-84848.app.workbuddy.host/?sharecode=UAEM22HSJO
+**在线体验**：[zongce-workbench-84848.app.workbuddy.host](https://zongce-workbench-84848.app.workbuddy.host/?sharecode=UAEM22HSJO)
+　**备用镜像**：[panjiang429.github.io/zongce-workbench](https://panjiang429.github.io/zongce-workbench/)
 
 （内置虚构示例数据，点左下角「清空全部数据」即可录入自己的档案；所有数据仅存于浏览器本地，不上传服务器。）
 
